@@ -8,6 +8,14 @@
         "category": "Metadata",
         "versions": [
             {
+                "version": "1.6.3.0",
+                "changelog": "## v1.6.3.0\n### What's New\n- Optional self-hosted LRCLIB server URL: point the plugin at your own LRCLIB instance instead of lrclib.net. Subpath URLs are preserved and the URL is validated on save. Thanks to @Nausi-llon (#50).\n- Built-in rate limiting for lrclib.net requests: enforces a 200 ms minimum gap between calls and honors HTTP 429 `Retry-After` so transient spikes back off cleanly instead of surfacing as per-track errors.\n- Identifiable User-Agent on every lrclib request (`jellyfin-plugin-lyrics/<version> (+repo-url)`) so the LRCLIB operators can distinguish this plugin from `jellyfin/jellyfin-plugin-lrclib` (#49).\n\n### Notes\n- No configuration changes required for existing users \u2014 the self-host URL defaults to `https://lrclib.net` and the rate limit only kicks in under load.",
+                "targetAbi": "10.11.0.0",
+                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.3/lyrics_1.6.3.0.zip",
+                "checksum": "def6ddc0086c4d209e009ac44843009a",
+                "timestamp": "2026-05-20T06:54:14Z"
+            },
+            {
                 "version": "1.6.2.0",
                 "changelog": "## v1.6.2.0\n### What's New\n- Auto-removes the official \"LrcLib Lyrics\" plugin (`jellyfin-plugin-lrclib`) on startup if installed, since both plugins register the same lyrics provider and conflict. This plugin is a fork that fixes critical issues \u2014 see README. The old plugin can be reinstalled later to switch back.",
                 "targetAbi": "10.11.0.0",
