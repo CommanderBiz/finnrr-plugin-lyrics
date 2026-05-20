@@ -14,6 +14,6 @@ artifacts:
 changelog: |-
   ## v1.6.3.0
   ### What's New
-  - Optional self-hosted LRCLIB server URL: point the plugin at your own LRCLIB instance instead of lrclib.net. Thanks to @Nausi-llon (#50).
-  - Built-in rate limiting for lrclib.net requests: enforces a 200 ms minimum gap between calls and honors HTTP 429 `Retry-After` so transient spikes back off cleanly instead of surfacing as per-track errors (https://github.com/Felitendo/jellyfin-plugin-lyrics/commit/5d56f41b9be7cb608686d319a3e5fdbe2607e168)
-  - Identifiable User-Agent on every lrclib request (`jellyfin-plugin-lyrics/<version> (+repo-url)`) (https://github.com/Felitendo/jellyfin-plugin-lyrics/commit/121d70b5ebcca21438efea09e0f8fd748c4c731e).
+  - Optional self-hosted LRCLIB server URL: point the plugin at your own LRCLIB instance instead of lrclib.net. Thanks to @Nausi-llon -> #50
+  - Built-in rate limiting for lrclib.net requests: enforces a 200 ms minimum gap between calls and honors HTTP 429 `Retry-After` so transient spikes back off cleanly instead of surfacing as per-track errors -> https://github.com/Felitendo/jellyfin-plugin-lyrics/commit/5d56f41b9be7cb608686d319a3e5fdbe2607e168
+  - Identifiable User-Agent on every lrclib request -> https://github.com/Felitendo/jellyfin-plugin-lyrics/commit/121d70b5ebcca21438efea09e0f8fd748c4c731e
