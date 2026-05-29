@@ -201,14 +201,9 @@ public class LyricDownloadTask : IScheduledTask
                     continue;
                 }
 
-                // Check filesystem directly for existing lyric files to avoid re-downloading when the DB hasn't registered them yet.
-                var lyricInFileFound = false;
-                var lrcPath = Path.ChangeExtension(audioItem.Path, ".lrc");
-                var txtPath = Path.ChangeExtension(audioItem.Path, ".txt");
-                if (File.Exists(lrcPath) || File.Exists(txtPath))
-                {
-                    lyricInFileFound = true;
-                }
+                // Check the filesystem directly for existing lyric files to avoid re-downloading when the DB hasn't registered them yet.
+                // Lyrics can sit next to the media file or, when "Save lyrics into media folders" is off, in the item's internal metadata folder.
+                var lyricInFileFound = HasLyricFileOnDisk(audioItem);
 
                 try
                 {
@@ -333,6 +328,32 @@ public class LyricDownloadTask : IScheduledTask
     private static bool HasSyncedLyrics(LyricDto existingLyrics)
     {
         return existingLyrics.Metadata?.IsSynced == true;
+    }
+
+    private static bool HasLyricFileOnDisk(Audio audioItem)
+    {
+        if (string.IsNullOrEmpty(audioItem.Path))
+        {
+            return false;
+        }
+
+        // Next to the media file (library option "Save lyrics into media folders" enabled).
+        if (File.Exists(Path.ChangeExtension(audioItem.Path, ".lrc"))
+            || File.Exists(Path.ChangeExtension(audioItem.Path, ".txt")))
+        {
+            return true;
+        }
+
+        // Internal metadata folder (library option disabled): {InternalMetadataPath}/{fileNameWithoutExt}.{format}
+        var metadataPath = audioItem.GetInternalMetadataPath();
+        if (string.IsNullOrEmpty(metadataPath))
+        {
+            return false;
+        }
+
+        var baseName = Path.GetFileNameWithoutExtension(audioItem.Path);
+        return File.Exists(Path.Combine(metadataPath, baseName + ".lrc"))
+            || File.Exists(Path.Combine(metadataPath, baseName + ".txt"));
     }
 
     private static PluginConfiguration GetSanitizedConfiguration()
