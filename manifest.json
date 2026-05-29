@@ -8,6 +8,14 @@
         "category": "Metadata",
         "versions": [
             {
+                "version": "1.6.4.0",
+                "changelog": "## v1.6.4.0\n### Fixes\n- Lyric file detection now also checks Jellyfin's internal metadata folder, not just the media folder. With \"Save lyrics into media folders\" disabled, already-downloaded lyrics are detected instead of being re-downloaded on every task run, which also reduces load on lrclib.net -> #54",
+                "targetAbi": "10.11.0.0",
+                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.4/lyrics_1.6.4.0.zip",
+                "checksum": "0d12d29276b8c392ad458924f292489c",
+                "timestamp": "2026-05-29T21:15:40Z"
+            },
+            {
                 "version": "1.6.3.0",
                 "changelog": "## v1.6.3.0\n### What's New\n- Optional self-hosted LRCLIB server URL: point the plugin at your own LRCLIB instance instead of lrclib.net. Subpath URLs are preserved and the URL is validated on save. Thanks to @Nausi-llon (#50).\n- Built-in rate limiting for lrclib.net requests: enforces a 200 ms minimum gap between calls and honors HTTP 429 `Retry-After` so transient spikes back off cleanly instead of surfacing as per-track errors.\n- Identifiable User-Agent on every lrclib request (`jellyfin-plugin-lyrics/<version> (+repo-url)`) so the LRCLIB operators can distinguish this plugin from `jellyfin/jellyfin-plugin-lrclib` (#49).\n\n### Notes\n- No configuration changes required for existing users \u2014 the self-host URL defaults to `https://lrclib.net` and the rate limit only kicks in under load.",
                 "targetAbi": "10.11.0.0",
