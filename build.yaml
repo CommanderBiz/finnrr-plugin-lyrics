@@ -1,7 +1,7 @@
 name: "Lyrics"
 guid: "F4A1B2C3-D4E5-6F7A-8B9C-0D1E2F3A4B5C"
-version: "1.6.4"
-targetAbi: "10.11.0.0"
+version: "1.6.5"
+targetAbi: "10.11.6.0"
 framework: "net9.0"
 owner: "Felitendo"
 overview: "Lyrics plugin with configurable search options and automatic library scanning"
@@ -12,6 +12,6 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.Lyrics.dll"
 changelog: |-
-  ## v1.6.4.0
+  ## v1.6.5.0
   ### Fixes
-  - Lyric file detection now also checks Jellyfin's internal metadata folder, not just the media folder. With "Save lyrics into media folders" disabled, already-downloaded lyrics are detected instead of being re-downloaded on every task run, which also reduces load on lrclib.net -> #54
+  - Build against Jellyfin 10.11.6 instead of always the latest release. Previous builds were linked against 10.11.10 assemblies, which made Jellyfin report the plugin as "not supported" (TypeLoadException) on older 10.11.x servers. The plugin is now compatible with Jellyfin 10.11.6 and newer. -> #55
