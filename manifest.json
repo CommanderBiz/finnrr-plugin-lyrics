@@ -8,6 +8,14 @@
         "category": "Metadata",
         "versions": [
             {
+                "version": "1.6.5.0",
+                "changelog": "## v1.6.5.0\n### Fixes\n- Build against Jellyfin 10.11.6 instead of always the latest release. Previous builds were linked against 10.11.10 assemblies, which made Jellyfin report the plugin as \"not supported\" (TypeLoadException) on older 10.11.x servers. The plugin is now compatible with Jellyfin 10.11.6 and newer. -> #55",
+                "targetAbi": "10.11.6.0",
+                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.5/lyrics_1.6.5.0.zip",
+                "checksum": "4261efd91807a14f7b8dc46ac0a761cc",
+                "timestamp": "2026-05-31T11:58:05Z"
+            },
+            {
                 "version": "1.6.4.0",
                 "changelog": "## v1.6.4.0\n### Fixes\n- Lyric file detection now also checks Jellyfin's internal metadata folder, not just the media folder. With \"Save lyrics into media folders\" disabled, already-downloaded lyrics are detected instead of being re-downloaded on every task run, which also reduces load on lrclib.net -> #54",
                 "targetAbi": "10.11.0.0",
