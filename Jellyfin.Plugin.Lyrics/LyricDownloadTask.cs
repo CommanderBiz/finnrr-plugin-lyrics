@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Data.Enums;
@@ -40,6 +41,10 @@ public class LyricDownloadTask : IScheduledTask
 
     private static readonly int[] DefaultBackoffScheduleDays = [1, 3, 7, 30];
     private static readonly TimeSpan ErrorRetryDelay = TimeSpan.FromDays(1);
+
+    // Matches an LRC line/word time tag like [00:12.34] or [1:02]; metadata tags ([ar:..], [length:03:21], ..) don't
+    // match because a digit must immediately follow '['.
+    private static readonly Regex SyncedLyricTagRegex = new(@"\[\d{1,3}:\d{2}([.:]\d{1,3})?\]", RegexOptions.Compiled);
 
     private static readonly BaseItemKind[] ItemKinds = [BaseItemKind.Audio];
     private static readonly MediaType[] MediaTypes = [MediaType.Audio];
@@ -203,7 +208,8 @@ public class LyricDownloadTask : IScheduledTask
 
                 // Check the filesystem directly for existing lyric files to avoid re-downloading when the DB hasn't registered them yet.
                 // Lyrics can sit next to the media file or, when "Save lyrics into media folders" is off, in the item's internal metadata folder.
-                var lyricInFileFound = HasLyricFileOnDisk(audioItem);
+                var lyricFileOnDisk = FindLyricFileOnDisk(audioItem);
+                var lyricInFileFound = lyricFileOnDisk is not null;
 
                 try
                 {
@@ -237,6 +243,13 @@ public class LyricDownloadTask : IScheduledTask
                     else if (HasSyncedLyrics(existingLyrics!))
                     {
                         alreadySyncedSkippedCount++;
+                        stateMutations += ClearRetryState(retryState, itemKey);
+                    }
+                    else if (lyricFileOnDisk is not null && IsSyncedLyricFile(lyricFileOnDisk))
+                    {
+                        // DB still reports plain, but a synced .lrc already sits on disk (core doesn't refresh the DB
+                        // after a download). Nothing to upgrade; re-downloading would loop until the next library scan.
+                        dbDesyncSkippedCount++;
                         stateMutations += ClearRetryState(retryState, itemKey);
                     }
                     else
@@ -330,30 +343,67 @@ public class LyricDownloadTask : IScheduledTask
         return existingLyrics.Metadata?.IsSynced == true;
     }
 
-    private static bool HasLyricFileOnDisk(Audio audioItem)
+    // Returns the path of an existing lyric sidecar (preferring synced .lrc over plain .txt), or null when none exists.
+    private static string? FindLyricFileOnDisk(Audio audioItem)
     {
         if (string.IsNullOrEmpty(audioItem.Path))
         {
-            return false;
+            return null;
         }
 
         // Next to the media file (library option "Save lyrics into media folders" enabled).
-        if (File.Exists(Path.ChangeExtension(audioItem.Path, ".lrc"))
-            || File.Exists(Path.ChangeExtension(audioItem.Path, ".txt")))
+        var lrcNextTo = Path.ChangeExtension(audioItem.Path, ".lrc");
+        if (File.Exists(lrcNextTo))
         {
-            return true;
+            return lrcNextTo;
+        }
+
+        var txtNextTo = Path.ChangeExtension(audioItem.Path, ".txt");
+        if (File.Exists(txtNextTo))
+        {
+            return txtNextTo;
         }
 
         // Internal metadata folder (library option disabled): {InternalMetadataPath}/{fileNameWithoutExt}.{format}
         var metadataPath = audioItem.GetInternalMetadataPath();
         if (string.IsNullOrEmpty(metadataPath))
         {
-            return false;
+            return null;
         }
 
         var baseName = Path.GetFileNameWithoutExtension(audioItem.Path);
-        return File.Exists(Path.Combine(metadataPath, baseName + ".lrc"))
-            || File.Exists(Path.Combine(metadataPath, baseName + ".txt"));
+        var lrcMeta = Path.Combine(metadataPath, baseName + ".lrc");
+        if (File.Exists(lrcMeta))
+        {
+            return lrcMeta;
+        }
+
+        var txtMeta = Path.Combine(metadataPath, baseName + ".txt");
+        return File.Exists(txtMeta) ? txtMeta : null;
+    }
+
+    // Treats a lyric file as synced when any line carries an LRC time tag. Content-based so it works regardless of
+    // extension or which tool wrote the file. On read failure, falls back to "not synced" so normal logic proceeds.
+    private static bool IsSyncedLyricFile(string path)
+    {
+        try
+        {
+            foreach (var line in File.ReadLines(path))
+            {
+                if (SyncedLyricTagRegex.IsMatch(line))
+                {
+                    return true;
+                }
+            }
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+
+        return false;
     }
 
     private static PluginConfiguration GetSanitizedConfiguration()

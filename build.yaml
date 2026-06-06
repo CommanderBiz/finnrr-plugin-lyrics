@@ -1,6 +1,6 @@
 name: "Lyrics"
 guid: "F4A1B2C3-D4E5-6F7A-8B9C-0D1E2F3A4B5C"
-version: "1.6.5"
+version: "1.6.6"
 targetAbi: "10.11.6.0"
 framework: "net9.0"
 owner: "Felitendo"
@@ -12,6 +12,6 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.Lyrics.dll"
 changelog: |-
-  ## v1.6.5.0
+  ## v1.6.6.0
   ### Fixes
-  - Build against Jellyfin 10.11.6 instead of always the latest release. Previous builds were linked against 10.11.10 assemblies, which made Jellyfin report the plugin as "not supported" (TypeLoadException) on older 10.11.x servers. The plugin is now compatible with Jellyfin 10.11.6 and newer. -> #55
+  - The lyrics task no longer re-downloads tracks that already have synced lyrics on disk. When a track's lyrics were saved but the database still reported them as plain (Jellyfin doesn't refresh metadata after a download until the next library scan), the task kept "upgrading" the same tracks on every run. It now trusts the synced .lrc file already on disk and skips it. -> #43
