@@ -5,11 +5,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.Lyrics.Models;
+using Jellyfin.Plugin.Finnrr.Models;
 using MediaBrowser.Common.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Lyrics;
+namespace Jellyfin.Plugin.Finnrr;
 
 /// <summary>
 /// Persists retry and cursor state for the lyric download task.
@@ -34,7 +34,7 @@ public class RetryStateStore
     {
         _logger = logger;
 
-        var stateDir = Path.Combine(ResolveBasePath(applicationPaths), "plugins", "lyrics");
+        var stateDir = Path.Combine(ResolveBasePath(applicationPaths), "plugins", "finnrr");
         Directory.CreateDirectory(stateDir);
         _stateFilePath = Path.Combine(stateDir, "retry-state.json");
     }

@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using MediaBrowser.Common.Configuration;
 
-namespace Jellyfin.Plugin.Lyrics;
+namespace Jellyfin.Plugin.Finnrr;
 
 /// <summary>
 /// Detects a side-by-side install of the official jellyfin-plugin-lrclib and marks it
@@ -44,7 +44,7 @@ internal static class CompetingPluginCleanup
         {
             Console.Error.WriteLine(string.Create(
                 CultureInfo.InvariantCulture,
-                $"[Jellyfin.Plugin.Lyrics] Failed to scan for competing LrcLib plugin: {ex.Message}"));
+                $"[Jellyfin.Plugin.Finnrr] Failed to scan for competing LrcLib plugin: {ex.Message}"));
         }
     }
 
@@ -84,13 +84,13 @@ internal static class CompetingPluginCleanup
 
             Console.WriteLine(string.Create(
                 CultureInfo.InvariantCulture,
-                $"[Jellyfin.Plugin.Lyrics] Marked competing LrcLib plugin at '{pluginDir}' for removal. Restart Jellyfin to complete uninstall."));
+                $"[Jellyfin.Plugin.Finnrr] Marked competing LrcLib plugin at '{pluginDir}' for removal. Restart Jellyfin to complete uninstall."));
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine(string.Create(
                 CultureInfo.InvariantCulture,
-                $"[Jellyfin.Plugin.Lyrics] Could not process plugin manifest in '{pluginDir}': {ex.Message}"));
+                $"[Jellyfin.Plugin.Finnrr] Could not process plugin manifest in '{pluginDir}': {ex.Message}"));
         }
     }
 }

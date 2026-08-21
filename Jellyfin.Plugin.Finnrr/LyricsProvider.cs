@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Jellyfin.Plugin.Lyrics.Models;
+using Jellyfin.Plugin.Finnrr.Models;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Lyrics;
@@ -17,7 +17,7 @@ using MediaBrowser.Model.Lyrics;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Lyrics;
+namespace Jellyfin.Plugin.Finnrr;
 
 /// <summary>
 /// Lyric provider for Lyrics.
@@ -78,7 +78,7 @@ public class LyricsProvider : ILyricProvider
     {
         get
         {
-            var configured = LyricsPlugin.Instance?.Configuration.LrclibBaseUrl;
+            var configured = FinnrrPlugin.Instance?.Configuration.LrclibBaseUrl;
             if (string.IsNullOrWhiteSpace(configured))
             {
                 return DefaultBaseUrl;
@@ -95,25 +95,25 @@ public class LyricsProvider : ILyricProvider
         }
     }
 
-    private static bool UseStrictSearch => LyricsPlugin.Instance?.Configuration.UseStrictSearch ?? true;
+    private static bool UseStrictSearch => FinnrrPlugin.Instance?.Configuration.UseStrictSearch ?? true;
 
-    private static bool ExcludeArtistName => LyricsPlugin.Instance?.Configuration.ExcludeArtistName ?? false;
+    private static bool ExcludeArtistName => FinnrrPlugin.Instance?.Configuration.ExcludeArtistName ?? false;
 
-    private static bool ExcludeAlbumName => LyricsPlugin.Instance?.Configuration.ExcludeAlbumName ?? false;
+    private static bool ExcludeAlbumName => FinnrrPlugin.Instance?.Configuration.ExcludeAlbumName ?? false;
 
-    private static bool EnableDurationFilter => LyricsPlugin.Instance?.Configuration.EnableDurationFilter ?? true;
+    private static bool EnableDurationFilter => FinnrrPlugin.Instance?.Configuration.EnableDurationFilter ?? true;
 
     private static int DurationToleranceSeconds
     {
         get
         {
-            var configured = LyricsPlugin.Instance?.Configuration.DurationToleranceSeconds ?? 15;
+            var configured = FinnrrPlugin.Instance?.Configuration.DurationToleranceSeconds ?? 15;
             return configured > 0 ? configured : 15;
         }
     }
 
     /// <inheritdoc />
-    public string Name => LyricsPlugin.Instance!.Name;
+    public string Name => FinnrrPlugin.Instance!.Name;
 
     /// <inheritdoc />
     public async Task<IEnumerable<RemoteLyricInfo>> SearchAsync(

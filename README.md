@@ -1,113 +1,46 @@
-# 🎶 Jellyfin Lyrics Plugin
+# 🦁 Finnrr Lyrics — Jellyfin Plugin
 
-A plugin for **Jellyfin** that automatically downloads and displays lyrics for songs in your music library using [lrclib.net](https://lrclib.net).
+Finnrr's own Jellyfin lyrics plugin. Downloads synced lyrics from [lrclib.net](https://lrclib.net) for your music library — and the Finnrr difference: **automatically syncs lyrics for newly added music** after every library scan. No manual task runs when new albums land.
 
-Looking for **v10.10.7 support**? -> https://github.com/Felitendo/jellyfin-plugin-lyrics-v10.10.7
+A GPL-3.0 fork of [Felitendo/jellyfin-plugin-lyrics](https://github.com/Felitendo/jellyfin-plugin-lyrics) v1.6.6.0, rebranded as part of the Finnrr project (Finnrr = Chaldean 23, the Royal Star of the Lion).
 
----
+## Features
 
-## ✨ Features
+- 🔄 Automatically downloads lyrics for your entire library (scheduled task: *Download and upgrade lyrics*)
+- ⚡ **Finnrr auto-sync** — fetches lyrics for newly added tracks right after each library scan (new in this fork)
+- 🌐 Fetches lyrics directly from lrclib.net (or a self-hosted LRCLIB instance)
+- 🕒 Synced lyrics show up in any Jellyfin client's Now Playing screen — including Finnrr
+- ⚡ Smart scheduled task that avoids retrying failed songs every day (adaptive backoff)
+- 🎯 Match filtering by artist + duration tolerance to keep intro clips and wrong matches out
 
-- 🔄 Automatically downloads lyrics for your entire library  
-- 🎼 Seamlessly integrates with Jellyfin’s music player  
-- 🌐 Fetches lyrics directly from [lrclib.net](https://lrclib.net)  
-- 🏠 Optional self-hosted LRCLIB instance support (advanced)
-- 🕒 Real-time lyrics display during playback  
-- ⚡ Smarter scheduled task that avoids retrying the same failed songs every day  
+## Installation
 
----
+1. Jellyfin **10.11.6 or newer**.
+2. If the old "LrcLib" plugin (`jellyfin-plugin-lrclib`) is installed, uninstall it and restart Jellyfin (this plugin also auto-marks it for removal on startup).
+3. Add the plugin repository to Jellyfin:
+   `https://raw.githubusercontent.com/CommanderBiz/jellyfin-plugin-finnrr/master/manifest.json`
+4. Open the Plugin Catalog → **Finnrr Lyrics** (Metadata category) → Install → restart Jellyfin.
+5. Run *Download and upgrade lyrics* once under Scheduled Tasks to backfill the library.
+6. Scan all libraries. Everything added afterwards gets lyrics **automatically**.
 
-## 🚀 Installation
+## Settings
 
-1. Make sure your Jellyfin server is updated to **version 10.11.6 or higher**
-2. If jellyfin's **"LrcLib"** plugin (`jellyfin-plugin-lrclib`) is installed, uninstall it first to avoid conflicts:
-   - Go to **Dashboard → Plugins → My Plugins**
-   - Find **"LrcLib"**, click it, then click **Uninstall** and confirm
-   - Restart Jellyfin
-3. Add the plugin repository URL to Jellyfin:
-   ```
-   https://raw.githubusercontent.com/Felitendo/jellyfin-plugin-lyrics/master/manifest.json
-   ```
-4. Open the **Plugin Catalog** in your Jellyfin dashboard  
-5. Look for **"Lyrics"** under the **Metadata** category and install it
-6. Restart Jellyfin
-7. Go to **Scheduled Tasks** and run **"Download and upgrade lyrics"**
-8. Go to **Libraries** and click on **Scan all Libraries**
+| Setting | Default | What it does |
+|---|---|---|
+| Use strict search | off | Exact match only (artist + title) instead of fuzzy |
+| Exclude artist / album name | album off | Removes those from search parameters |
+| Filter matches by song length | on (15s tolerance) | Rejects lyrics whose duration differs too much (kills intro-clip matches) |
+| Skip repeated misses | on | Backs off 1, 3, 7, 30 days for tracks with no lyrics online |
+| Limit work per run | on (2000) | Caps tracks checked per scheduled run |
+| **Auto-sync new music (Finnrr)** | **on (100)** | **After each library scan, fetches lyrics for the newest tracks missing them** |
+| LRCLIB server URL | lrclib.net | Point at a self-hosted LRCLIB instance if you run one |
 
----
+## Troubleshooting
 
-## 🛠️ Troubleshooting
+- **Lyrics not showing for a track?** Right-click the song → *Edit song text* → search icon, or refresh metadata on the album.
+- **Wrong lyrics on instrumentals/interludes?** Lower the duration tolerance (e.g. 5s).
+- **Legit songs skipped?** Raise duration tolerance (e.g. 30s) or toggle strict search.
 
-- **Plugin not appearing?**  
-  → Double check if your Jellyfin version is **10.11.6 or higher**
+## License
 
-- **Lyrics not showing?**  
-  → Try to search for songs manually (right click on a song -> edit song text -> click on the search icon)
-  → Try **refreshing metadata**
-
-- **Missing lyrics for specific tracks?**  
-  → Manually refresh metadata (see below)
-  → Toggle the `"Use strict search."` option in plugin settings
-  → If a song with very long trailing silence or a remastered version is being skipped, increase `Duration tolerance (seconds)`
-
-- **Wrong lyrics on instrumental / interlude tracks?**  
-  → The plugin filters matches by artist and by duration. If you still see wrong matches, **lower** `Duration tolerance (seconds)` (e.g. `5`) so only very close-duration matches are accepted.
-  → If legitimate songs are being skipped instead, **raise** the value (e.g. `30`).
-
-- **Scheduled task takes too long?**  
-  → Turn on `Skip repeated misses` (default on)
-  → Turn on `Limit work per run` and reduce `Max songs to check each run`
-  → Keep `Retry after days` on `1,3,7,30` unless you want faster/slower retries
-
-### How match filtering works
-
-- **Filter matches by song length** — default on  
-  When on, the plugin compares your local song's length to the length of the lyrics it finds online and skips lyrics whose length is too different. This stops short tracks like intros and interludes from getting lyrics that belong to a completely different song with a similar title.  
-  Turn this off if you want the plugin to accept any match regardless of length (not recommended — you'll get more wrong matches).
-
-- **Duration tolerance (seconds)** — default `15`  
-  Only used when the length filter is on. How close the song length has to be to a lyrics match for the match to count. If they differ by more than this many seconds, the lyrics are skipped.
-  - **Lower** (e.g. `5`) — stricter. Better at catching wrong matches, but might skip correct lyrics if your file has long silence at the end or is a different version (remaster, vinyl rip).
-  - **Higher** (e.g. `30`) — more forgiving. Accepts more correct matches, but lets more wrong ones through.
-  - The artist always has to match too — this setting only controls the length check.
-
-### How the speed settings work
-
-- **Skip repeated misses**  
-  When a song has no lyrics, the plugin does **not** retry it every day.  
-  With the default `1,3,7,30` schedule it tries:
-  - after 1 day
-  - then after 3 days
-  - then after 7 days
-  - then every 30 days  
-  This removes most repeated API calls for songs that likely have no lyrics online.
-
-- **Limit work per run**  
-  Caps how many songs are checked in one scheduled run.  
-  Example: with `Max songs = 1000`, the task stops after ~1000 songs and continues next day, instead of running for many hours.
-
-- **Good starting values**
-  - Small library: `Max songs = 2000` (default)
-  - Large library / slow server: `Max songs = 500-1000`
----
-
-## 🔄 Manual Refresh
-
-If lyrics aren't appearing for specific albums:
-
-1. Navigate to the album  
-2. Right-click the album  
-3. Select **"Refresh metadata"**
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome!  
-Feel free to open a **Pull Request**, or suggest new features / report bugs via an **Issue**.
-
----
-
-## 📬 Support
-
-👉 [Create an Issue](https://github.com/Felitendo/jellyfin-plugin-lyrics/issues)
+GPL-3.0. Fork of [Felitendo/jellyfin-plugin-lyrics](https://github.com/Felitendo/jellyfin-plugin-lyrics) (GPL-3.0). Lyrics from [lrclib.net](https://lrclib.net).

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Jellyfin.Plugin.Lyrics.Models;
+namespace Jellyfin.Plugin.Finnrr.Models;
 
 /// <summary>
 /// Persisted retry and cursor state for lyric task runs.

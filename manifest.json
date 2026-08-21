@@ -1,92 +1,11 @@
 [
     {
-        "guid": "f4a1b2c3-d4e5-6f7a-8b9c-0d1e2f3a4b5c",
-        "name": "Lyrics",
-        "description": "Lyrics plugin that downloads lyrics from lrclib.net with configurable search options\n",
-        "overview": "Lyrics plugin with configurable search options and automatic library scanning",
-        "owner": "Felitendo",
+        "guid": "2186e1c8-cca5-4b3e-bd2a-0535b1170b15",
+        "name": "Finnrr Lyrics",
+        "description": "Finnrr lyrics plugin that downloads synced lyrics from lrclib.net with configurable search options and auto-sync for newly added music",
+        "overview": "Finnrr lyrics plugin with configurable search options, automatic library scanning, and auto-sync for newly added music",
+        "owner": "CommanderBiz",
         "category": "Metadata",
-        "versions": [
-            {
-                "version": "1.6.6.0",
-                "changelog": "## v1.6.6.0\n### Fixes\n- The lyrics task no longer re-downloads tracks that already have synced lyrics on disk. When a track's lyrics were saved but the database still reported them as plain (Jellyfin doesn't refresh metadata after a download until the next library scan), the task kept \"upgrading\" the same tracks on every run. It now trusts the synced .lrc file already on disk and skips it. -> #43",
-                "targetAbi": "10.11.6.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.6/lyrics_1.6.6.0.zip",
-                "checksum": "b65b1774995f1157f0932c2fd0d9c74c",
-                "timestamp": "2026-06-06T19:59:16Z"
-            },
-            {
-                "version": "1.6.5.0",
-                "changelog": "## v1.6.5.0\n### Fixes\n- Build against Jellyfin 10.11.6 instead of always the latest release. Previous builds were linked against 10.11.10 assemblies, which made Jellyfin report the plugin as \"not supported\" (TypeLoadException) on older 10.11.x servers. The plugin is now compatible with Jellyfin 10.11.6 and newer. -> #55",
-                "targetAbi": "10.11.6.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.5/lyrics_1.6.5.0.zip",
-                "checksum": "4261efd91807a14f7b8dc46ac0a761cc",
-                "timestamp": "2026-05-31T11:58:05Z"
-            },
-            {
-                "version": "1.6.4.0",
-                "changelog": "## v1.6.4.0\n### Fixes\n- Lyric file detection now also checks Jellyfin's internal metadata folder, not just the media folder. With \"Save lyrics into media folders\" disabled, already-downloaded lyrics are detected instead of being re-downloaded on every task run, which also reduces load on lrclib.net -> #54",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.4/lyrics_1.6.4.0.zip",
-                "checksum": "0d12d29276b8c392ad458924f292489c",
-                "timestamp": "2026-05-29T21:15:40Z"
-            },
-            {
-                "version": "1.6.3.0",
-                "changelog": "## v1.6.3.0\n### What's New\n- Optional self-hosted LRCLIB server URL: point the plugin at your own LRCLIB instance instead of lrclib.net. Subpath URLs are preserved and the URL is validated on save. Thanks to @Nausi-llon (#50).\n- Built-in rate limiting for lrclib.net requests: enforces a 200 ms minimum gap between calls and honors HTTP 429 `Retry-After` so transient spikes back off cleanly instead of surfacing as per-track errors.\n- Identifiable User-Agent on every lrclib request (`jellyfin-plugin-lyrics/<version> (+repo-url)`) so the LRCLIB operators can distinguish this plugin from `jellyfin/jellyfin-plugin-lrclib` (#49).\n\n### Notes\n- No configuration changes required for existing users \u2014 the self-host URL defaults to `https://lrclib.net` and the rate limit only kicks in under load.",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.3/lyrics_1.6.3.0.zip",
-                "checksum": "def6ddc0086c4d209e009ac44843009a",
-                "timestamp": "2026-05-20T06:54:14Z"
-            },
-            {
-                "version": "1.6.2.0",
-                "changelog": "## v1.6.2.0\n### What's New\n- Auto-removes the official \"LrcLib Lyrics\" plugin (`jellyfin-plugin-lrclib`) on startup if installed, since both plugins register the same lyrics provider and conflict. This plugin is a fork that fixes critical issues \u2014 see README. The old plugin can be reinstalled later to switch back.",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.2/lyrics_1.6.2.0.zip",
-                "checksum": "ee8093940bd444dd028e2c905fe8b5ce",
-                "timestamp": "2026-05-08T09:52:43Z"
-            },
-            {
-                "version": "1.6.1.0",
-                "changelog": "## v1.6.1.0\n### What's New\n- Lyrics alternative discovery: skip re-downloading lyrics that already failed in a previous run\n- Synced-lyric upgrade now checks the existing sidecar file before replacing plain text\n\n### Fixes\n- Stop matching instrumental tracks against unrelated songs: honor LRCLIB's instrumental flag, validate every match against requested duration and artist, and drop the track-name-only fuzzy fallback when artist info is available (#40)\n- Scheduled task log: split DB-desync skips from \"already synced\" skips so plain `.txt` sidecars are no longer counted as synced\n\n### Settings\n- New configurable duration-tolerance filter (default on, \u00b115s) with UI toggle to tune or disable\n\n### Notes\n- Jellyfin 10.11.6 or newer is now recommended (see README)",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6.1/lyrics_1.6.1.0.zip",
-                "checksum": "f6ccc7ef5d0e48c65ee16cabb4316a85",
-                "timestamp": "2026-05-06T12:25:48Z"
-            },
-            {
-                "version": "1.6.0.0",
-                "changelog": "## v1.6.0.0\n### What's New\n- Added song title cleanup to strip YouTube-style suffixes (Official Music Video, etc.) and duplicate artist names\n- Added progressive search fallback: retries with fewer parameters when no results are found\n- Added multi-artist support: splits \"artist1/artist2\" and tries each artist individually\n- Replace non-synced lyrics with synced ones when available\n- Sped up scheduled lyrics task\n\n### Fixes\n- Fixed DI issue with RetryStateStore causing plugin to malfunction on startup\n- Fixed fuzzy search failing when album name is missing\n- Fixed crash on missing artist or invalid id\n\n### Defaults Changed\n- Strict search is now disabled by default\n- \"Exclude album name\" is now enabled by default",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.6/lyrics_1.6.0.0.zip",
-                "checksum": "d49d7f29e02f686d5001df2374154e29",
-                "timestamp": "2026-03-29T03:02:22Z"
-            },
-            {
-                "version": "1.5.0.0",
-                "changelog": "## v1.5.0.0\n### What's New\n- Fixed support for Jellyfin 10.11",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.5/lyrics_1.5.0.0.zip",
-                "checksum": "01a01fb05727c76d5bdf7cf14c6fe596",
-                "timestamp": "2025-10-22T07:42:02Z"
-            },
-            {
-                "version": "1.4.0.0",
-                "changelog": "## v1.4.0.0\n### What's New\n- Added support for Jellyfin 10.11",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.4/lyrics_1.4.0.0.zip",
-                "checksum": "6df43bfb10b62bc783d071eef99395a3",
-                "timestamp": "2025-10-22T07:32:39Z"
-            },
-            {
-                "version": "1.3.0.0",
-                "changelog": "## v1.3.0.0\n### What's New\n- Fixed a lot of plugin loading issues\n- Fixed GitHub Action Workflows\n\n### Technical Improvements\n- Consistent versioning across all project files\n- Better package compatibility with Jellyfin 10.9.x series\n- Improved documentation and installation instructions",
-                "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/Felitendo/jellyfin-plugin-lyrics/releases/download/v1.3/lyrics_1.3.0.0.zip",
-                "checksum": "3dafa3c4dfba4ab3b9af2511714a646e",
-                "timestamp": "2025-10-20T11:07:29Z"
-            }
-        ]
+        "versions": []
     }
 ]

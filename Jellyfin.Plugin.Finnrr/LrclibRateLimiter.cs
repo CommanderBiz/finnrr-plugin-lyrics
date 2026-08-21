@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Lyrics;
+namespace Jellyfin.Plugin.Finnrr;
 
 /// <summary>
 /// Process-wide rate-limit gate for lrclib.net requests. Enforces a minimum 200 ms gap between
@@ -24,10 +24,10 @@ internal static class LrclibRateLimiter
     private static readonly SemaphoreSlim _gate = new(1, 1);
 
     private static readonly ProductInfoHeaderValue _uaProduct =
-        new("jellyfin-plugin-lyrics", ResolveVersion());
+        new("finnrr-plugin", ResolveVersion());
 
     private static readonly ProductInfoHeaderValue _uaComment =
-        new("(+https://github.com/Felitendo/jellyfin-plugin-lyrics)");
+        new("(+https://github.com/CommanderBiz/jellyfin-plugin-finnrr)");
 
     private static DateTime _earliestNextRequestUtc = DateTime.MinValue;
 
@@ -119,7 +119,7 @@ internal static class LrclibRateLimiter
 
     private static string ResolveVersion()
     {
-        var version = LyricsPlugin.Instance?.Version
+        var version = FinnrrPlugin.Instance?.Version
             ?? typeof(LrclibRateLimiter).Assembly.GetName().Version;
         return version?.ToString() ?? "unknown";
     }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-    <title>Lyrics</title>
+    <title>Finnrr Lyrics</title>
 </head>
 <body>
     <div id="lyricsConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage">
@@ -10,7 +10,7 @@
                 <form class="gotifyConfigurationForm">
                     <div class="verticalSection verticalSection-extrabottompadding">
                         <div class="sectionTitleContainer flex align-items-center">
-                            <h2 class="sectionTitle">Lyrics Settings:</h2>
+                            <h2 class="sectionTitle">Finnrr Lyrics Settings:</h2>
                         </div>
                         <label class="checkboxContainer">
                             <input is="emby-checkbox" type="checkbox" id="useStrictSearch" />
@@ -70,6 +70,19 @@
                                 <input is="emby-input" type="number" id="maxTracksPerRun" min="100" step="1" />
                             </label>
                         </div>
+                        <label class="checkboxContainer">
+                            <input is="emby-checkbox" type="checkbox" id="enableAutoSyncOnScan" />
+                            <span>Auto-sync lyrics for newly added music (Finnrr)</span>
+                        </label>
+                        <div id="autoSyncSettings" style="margin-left: 2.2em;">
+                            <p style="margin: 0 0 1em 0; font-size: 0.95em; opacity: 0.8;">
+                                After every library scan, fetch lyrics for the newest tracks that don't have any yet. New albums get synced lyrics automatically, no manual task run needed.
+                            </p>
+                            <label>
+                                Max new tracks to check per scan
+                                <input is="emby-input" type="number" id="autoSyncMaxTracksPerScan" min="1" step="1" />
+                            </label>
+                        </div>
                         <div class="inputContainer">
                             <label class="inputLabel inputLabelUnfocused" for="lrclibBaseUrl">LRCLIB server URL (optional, for advanced users)</label>
                             <input is="emby-input" type="text" id="lrclibBaseUrl" placeholder="https://lrclib.net" />
@@ -88,13 +101,13 @@
             </div>
         </div>
         <script type="text/javascript">
-        var LyricsPluginConfiguration = {
-            uniquePluginId: "f4a1b2c3-d4e5-6f7a-8b9c-0d1e2f3a4b5c",
+        var FinnrrPluginConfiguration = {
+            uniquePluginId: "2186e1c8-cca5-4b3e-bd2a-0535b1170b15",
 
             loadConfiguration: function () {
                 Dashboard.showLoadingMsg();
 
-                ApiClient.getPluginConfiguration(LyricsPluginConfiguration.uniquePluginId).then(function (config) {
+                ApiClient.getPluginConfiguration(FinnrrPluginConfiguration.uniquePluginId).then(function (config) {
                     document.querySelector('#lrclibBaseUrl').value = config.LrclibBaseUrl || '';
                     document.querySelector('#useStrictSearch').checked = config.UseStrictSearch;
 
@@ -112,23 +125,26 @@
                     document.querySelector('#enableRunCap').checked = config.EnableRunCap !== false;
                     document.querySelector('#maxTracksPerRun').value = Math.max(config.MaxTracksPerRun || 2000, 100);
                     document.querySelector('#failureStateTtlDays').value = Math.max(config.FailureStateTtlDays || 90, 1);
+                    document.querySelector('#enableAutoSyncOnScan').checked = config.EnableAutoSyncOnScan !== false;
+                    document.querySelector('#autoSyncMaxTracksPerScan').value = Math.max(config.AutoSyncMaxTracksPerScan || 100, 1);
 
                     var backoffDays = Array.isArray(config.BackoffScheduleDays) && config.BackoffScheduleDays.length > 0
                         ? config.BackoffScheduleDays
                         : [1, 3, 7, 30];
                     document.querySelector('#backoffScheduleDays').value = backoffDays.join(',');
 
-                    LyricsPluginConfiguration.toggleStrictSearchVisibility();
-                    LyricsPluginConfiguration.toggleBackoffVisibility();
-                    LyricsPluginConfiguration.toggleRunCapVisibility();
-                    LyricsPluginConfiguration.toggleDurationFilterVisibility();
+                    FinnrrPluginConfiguration.toggleStrictSearchVisibility();
+                    FinnrrPluginConfiguration.toggleBackoffVisibility();
+                    FinnrrPluginConfiguration.toggleRunCapVisibility();
+                    FinnrrPluginConfiguration.toggleDurationFilterVisibility();
+                    FinnrrPluginConfiguration.toggleAutoSyncVisibility();
                     Dashboard.hideLoadingMsg();
                 });
             },
 
             saveConfiguration: function () {
                 Dashboard.showLoadingMsg();
-                ApiClient.getPluginConfiguration(LyricsPluginConfiguration.uniquePluginId).then(function (config) {
+                ApiClient.getPluginConfiguration(FinnrrPluginConfiguration.uniquePluginId).then(function (config) {
 
                     config.LrclibBaseUrl = (document.querySelector('#lrclibBaseUrl').value || '').trim();
                     config.UseStrictSearch = document.querySelector('#useStrictSearch').checked;
@@ -147,13 +163,17 @@
                     var failureStateTtlDaysValue = parseInt(document.querySelector('#failureStateTtlDays').value || '90', 10);
                     config.FailureStateTtlDays = Number.isFinite(failureStateTtlDaysValue) ? Math.max(failureStateTtlDaysValue, 1) : 90;
 
+                    config.EnableAutoSyncOnScan = document.querySelector('#enableAutoSyncOnScan').checked;
+                    var autoSyncMaxValue = parseInt(document.querySelector('#autoSyncMaxTracksPerScan').value || '100', 10);
+                    config.AutoSyncMaxTracksPerScan = Number.isFinite(autoSyncMaxValue) ? Math.max(autoSyncMaxValue, 1) : 100;
+
                     var parsedBackoffDays = (document.querySelector('#backoffScheduleDays').value || '')
                         .split(',')
                         .map(function (part) { return parseInt(part.trim(), 10); })
                         .filter(function (value) { return Number.isFinite(value) && value > 0; });
                     config.BackoffScheduleDays = parsedBackoffDays.length > 0 ? parsedBackoffDays : [1, 3, 7, 30];
 
-                    ApiClient.updatePluginConfiguration(LyricsPluginConfiguration.uniquePluginId, config).then(function (result) {
+                    ApiClient.updatePluginConfiguration(FinnrrPluginConfiguration.uniquePluginId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
                     });
                 });
@@ -195,32 +215,41 @@
                 else {
                     document.getElementById('durationFilterSettings').classList.add('hide');
                 }
+            },
+
+            toggleAutoSyncVisibility: function () {
+                if (document.getElementById('enableAutoSyncOnScan').checked) {
+                    document.getElementById('autoSyncSettings').classList.remove('hide');
+                }
+                else {
+                    document.getElementById('autoSyncSettings').classList.add('hide');
+                }
             }
         };
 
         document.getElementById('lyricsConfigurationPage').addEventListener('pageshow', function () {
-            LyricsPluginConfiguration.loadConfiguration();
+            FinnrrPluginConfiguration.loadConfiguration();
         });
 
         document.getElementById('lyricsConfigurationPage').addEventListener('submit', function (e) {
             e.preventDefault();
-            LyricsPluginConfiguration.saveConfiguration();
+            FinnrrPluginConfiguration.saveConfiguration();
         });
 
         document.getElementById('useStrictSearch').addEventListener('change', function () {
-            LyricsPluginConfiguration.toggleStrictSearchVisibility();
+            FinnrrPluginConfiguration.toggleStrictSearchVisibility();
         });
 
         document.getElementById('enableAdaptiveRetryBackoff').addEventListener('change', function () {
-            LyricsPluginConfiguration.toggleBackoffVisibility();
+            FinnrrPluginConfiguration.toggleBackoffVisibility();
         });
 
         document.getElementById('enableRunCap').addEventListener('change', function () {
-            LyricsPluginConfiguration.toggleRunCapVisibility();
+            FinnrrPluginConfiguration.toggleRunCapVisibility();
         });
 
         document.getElementById('enableDurationFilter').addEventListener('change', function () {
-            LyricsPluginConfiguration.toggleDurationFilterVisibility();
+            FinnrrPluginConfiguration.toggleDurationFilterVisibility();
         });
         </script>
     </div>

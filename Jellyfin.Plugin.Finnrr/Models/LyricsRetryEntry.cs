@@ -1,6 +1,6 @@
 using System;
 
-namespace Jellyfin.Plugin.Lyrics.Models;
+namespace Jellyfin.Plugin.Finnrr.Models;
 
 /// <summary>
 /// Retry state for one track.

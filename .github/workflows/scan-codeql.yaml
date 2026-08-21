@@ -17,4 +17,4 @@ jobs:
   call:
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/scan-codeql.yaml@master
     with:
-      repository-name: Felitendo/jellyfin-plugin-lyrics
+      repository-name: CommanderBiz/jellyfin-plugin-finnrr

@@ -11,8 +11,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Data.Enums;
-using Jellyfin.Plugin.Lyrics.Configuration;
-using Jellyfin.Plugin.Lyrics.Models;
+using Jellyfin.Plugin.Finnrr.Configuration;
+using Jellyfin.Plugin.Finnrr.Models;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
@@ -25,7 +25,7 @@ using MediaBrowser.Model.Lyrics;
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Lyrics;
+namespace Jellyfin.Plugin.Finnrr;
 
 /// <summary>
 /// Task to download lyrics.
@@ -300,9 +300,9 @@ public class LyricDownloadTask : IScheduledTask
         retryState.Cursor = NormalizeCursor(currentIndex, totalCount);
         await _retryStateStore.SaveAsync(retryState, cancellationToken).ConfigureAwait(false);
 
-        if (LyricsPlugin.Instance is not null)
+        if (FinnrrPlugin.Instance is not null)
         {
-            LyricsPlugin.Instance.Configuration.StateCursor = retryState.Cursor;
+            FinnrrPlugin.Instance.Configuration.StateCursor = retryState.Cursor;
         }
 
         _logger.LogInformation(
@@ -408,7 +408,7 @@ public class LyricDownloadTask : IScheduledTask
 
     private static PluginConfiguration GetSanitizedConfiguration()
     {
-        var configuration = LyricsPlugin.Instance?.Configuration ?? new PluginConfiguration();
+        var configuration = FinnrrPlugin.Instance?.Configuration ?? new PluginConfiguration();
         configuration.MaxTracksPerRun = configuration.MaxTracksPerRun <= 0
             ? DefaultMaxTracksPerRun
             : Math.Max(configuration.MaxTracksPerRun, MinimumMaxTracksPerRun);

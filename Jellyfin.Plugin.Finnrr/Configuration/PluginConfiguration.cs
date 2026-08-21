@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.Lyrics.Configuration;
+namespace Jellyfin.Plugin.Finnrr.Configuration;
 
 /// <summary>
 /// Configuration for lyrics plugin.
@@ -73,4 +73,15 @@ public class PluginConfiguration : BasePluginConfiguration
     /// Gets or sets the legacy state cursor value.
     /// </summary>
     public int StateCursor { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to automatically fetch lyrics for newly added
+    /// audio items after each library scan (Finnrr auto-sync).
+    /// </summary>
+    public bool EnableAutoSyncOnScan { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the maximum number of newly added tracks to check per scan.
+    /// </summary>
+    public int AutoSyncMaxTracksPerScan { get; set; } = 100;
 }

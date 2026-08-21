@@ -1,4 +1,4 @@
-namespace Jellyfin.Plugin.Lyrics.Models;
+namespace Jellyfin.Plugin.Finnrr.Models;
 
 /// <summary>
 /// Track processing outcomes used for retry state.

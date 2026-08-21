@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.Lyrics", "Jellyfin.Plugin.Lyrics\Jellyfin.Plugin.Lyrics.csproj", "{97FC037F-A612-493C-B99C-DDED100C3433}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.Finnrr", "Jellyfin.Plugin.Finnrr\Jellyfin.Plugin.Finnrr.csproj", "{97FC037F-A612-493C-B99C-DDED100C3433}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

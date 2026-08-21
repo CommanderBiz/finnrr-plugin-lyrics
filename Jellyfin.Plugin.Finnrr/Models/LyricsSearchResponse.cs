@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Jellyfin.Plugin.Lyrics.Models;
+namespace Jellyfin.Plugin.Finnrr.Models;
 
 /// <summary>
 /// Response model.
