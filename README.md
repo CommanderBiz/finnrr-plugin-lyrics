@@ -18,7 +18,7 @@ A GPL-3.0 fork of [Felitendo/jellyfin-plugin-lyrics](https://github.com/Felitend
 1. Jellyfin **10.11.6 or newer**.
 2. If the old "LrcLib" plugin (`jellyfin-plugin-lrclib`) is installed, uninstall it and restart Jellyfin (this plugin also auto-marks it for removal on startup).
 3. Add the plugin repository to Jellyfin:
-   `https://raw.githubusercontent.com/CommanderBiz/jellyfin-plugin-finnrr/master/manifest.json`
+   `https://raw.githubusercontent.com/CommanderBiz/finnrr-plugin-lyrics/master/manifest.json`
 4. Open the Plugin Catalog → **Finnrr Lyrics** (Metadata category) → Install → restart Jellyfin.
 5. Run *Download and upgrade lyrics* once under Scheduled Tasks to backfill the library.
 6. Scan all libraries. Everything added afterwards gets lyrics **automatically**.
