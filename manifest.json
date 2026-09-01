@@ -2,10 +2,19 @@
     {
         "guid": "2186e1c8-cca5-4b3e-bd2a-0535b1170b15",
         "name": "Finnrr Lyrics",
-        "description": "Finnrr lyrics plugin that downloads synced lyrics from lrclib.net with configurable search options and auto-sync for newly added music",
+        "description": "Finnrr's own lyrics plugin. Downloads synced lyrics from lrclib.net with configurable search options, and automatically syncs lyrics for newly added music after each library scan. Fork of Felitendo/jellyfin-plugin-lyrics (GPL-3.0).\n",
         "overview": "Finnrr lyrics plugin with configurable search options, automatic library scanning, and auto-sync for newly added music",
         "owner": "CommanderBiz",
         "category": "Metadata",
-        "versions": []
+        "versions": [
+            {
+                "version": "1.0.0.0",
+                "changelog": "## v1.0.0.0\n### Finnrr initial release\n- Fork of Felitendo/jellyfin-plugin-lyrics v1.6.6.0 (GPL-3.0)\n- Rebranded as Finnrr Lyrics under CommanderBiz (new plugin GUID)\n- New: auto-sync lyrics for newly added library items after each scan",
+                "targetAbi": "10.11.6.0",
+                "sourceUrl": "https://github.com/CommanderBiz/finnrr-plugin-lyrics/releases/download/v1.0.0.0/finnrr-lyrics_1.0.0.0.zip",
+                "checksum": "e89c72cbcb227e5dddd02699c31b9276",
+                "timestamp": "2026-09-01T18:22:08Z"
+            }
+        ]
     }
 ]
